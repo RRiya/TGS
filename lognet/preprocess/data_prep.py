@@ -14,7 +14,7 @@ from .utils import LASFileUWIMapper
 
 from sklearn.preprocessing import RobustScaler 
 
-curve_classes = ['SRESCurve', 'NeutCurve', 'GRCurve', 'SonicCurve']
+curve_classes = ['Resistivity', 'Neutron', 'Gamma', 'Sonic']
 
 class LAStoCSV():
     """
@@ -31,12 +31,12 @@ class LAStoCSV():
 
         self.file_uwi_mapper = LASFileUWIMapper(las_folder_path)
             
-        assert isinstance(metadata_df, pd.core.frame.DataFrame) == True,'metadata_df is not a dataframe'
+        assert(isinstance(metadata_df, pd.core.frame.DataFrame) == True)
         self.metadata_df = metadata_df
 
         if transforms:
-            assert isinstance(transforms, dict) == True, 'transforms is not a dictionary'
-            assert all(curve in curve_classes for curve in transforms.keys()) == True,"transforms.keys do not contain 'Resistivity', 'Neutron', 'Gamma', 'Sonic'"
+            assert (isinstance(transforms, dict) == True)
+            assert (all(curve in curve_classes for curve in transforms.keys()) == True)
             self.transforms = transforms
         else:
             self.transforms = None
@@ -50,10 +50,11 @@ class LAStoCSV():
         except:
             return None
 
-        assert isinstance(features, dict) == True, 'features is not a dictionary'
-        assert isinstance(targets, dict) == True, 'targets is not a dictionary'
-        assert all(curve in curve_classes for curve in features.keys()) == True,"features.keys do not contain 'Resistivity', 'Neutron', 'Gamma', 'Sonic'"
-        assert all(curve in curve_classes for curve in targets.keys()) == True,"targets.keys do not contain 'Resistivity', 'Neutron', 'Gamma', 'Sonic'"
+        assert (isinstance(features, dict) == True)
+        assert (isinstance(targets, dict) == True)
+        assert (all(curve in curve_classes for curve in features.keys()) == True)
+        assert (all(curve in curve_classes for curve in targets.keys()) == True)
+
         mnemonics = list(features.values()) + list(targets.values()) + ['DEPT']
 
         if not all(column_name in las_file.curvesdict.keys() for column_name in mnemonics):
@@ -72,11 +73,11 @@ class LAStoCSV():
             return None
 
         # Handle resistivity in a special manner
-        if 'SRESCurve' in list(features.keys()):
-            features_df[features['SRESCurve']] = np.log(features_df[features['Resistivity']])
+        if 'Resistivity' in list(features.keys()):
+            features_df[features['Resistivity']] = np.log(features_df[features['Resistivity']])
 
-        if 'SRESCurve' in list(targets.keys()):
-            features_df[targets['SRESCurve']] = np.log(features_df[features['Resistivity']])
+        if 'Resistivity' in list(targets.keys()):
+            features_df[targets['Resistivity']] = np.log(features_df[features['Resistivity']])
 
         # Transform the features here
         if self.transforms:
@@ -105,9 +106,9 @@ class LAStoCSV():
         features_df.dropna(axis=0, how='any', inplace=True)
         
         try:
-            assert features_df.isnull().any().any() == False,'features_df contains null values'
-            assert features_df.isna().any().any() == False,'features_df contains NAs'
-            assert features_df['DEPT'].is_monotonic == True, 'DEPT in features_df is not monotonic'
+            assert(features_df.isnull().any().any() == False)
+            assert(features_df.isna().any().any() == False)
+            assert(features_df['DEPT'].is_monotonic == True)
         except:
             return None
         
@@ -117,7 +118,7 @@ class LAStoCSV():
 
         feature_list = []
 
-        assert isinstance(features, list) == True, 'features is not a list'
+        assert (isinstance(features, list) == True)
 
         for feature in features:
             for shift in range(-(n//2), (n//2)+1):
@@ -142,11 +143,11 @@ class LAStoCSV():
     
     def to_csv(self, output_folder, feature_curves, target_curves, n=15, smoothing_window=31, debug=400, keep_location=False):
 
-        assert isinstance(feature_curves, list) == True, 'feature_curves not a list'
-        assert isinstance(target_curves, list) == True, 'target_curves not a list'
-        
+        assert (isinstance(feature_curves, list) == True)
+        assert (isinstance(target_curves, list) == True)
+
         if debug:
-            assert isinstance(debug, int) == True, 'debug is not an integer'
+            assert(isinstance(debug, int) == True)
 
         if self.transforms:
             for key in self.transforms:

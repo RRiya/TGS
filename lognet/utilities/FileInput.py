@@ -24,7 +24,7 @@ class FileInput():
         self.selected_df = pd.DataFrame()
 
     def _readFiles(self):
-        #print("generating LAS file list")
+        print("generating LAS file list")
         lasfiles = [f for f in os.listdir(self.las_path) if f.lower().endswith('.las')]
 
         try:
@@ -35,20 +35,19 @@ class FileInput():
         return lasfiles, data_df
 
     def generateFileList(self, feature_list, target_list):
-        assert isinstance(feature_list, list) == True, 'feature_list is not a list'
-        assert isinstance(target_list, list) == True, 'target_list is not a list'
         lasfiles, metadata_df = self._readFiles()
+
         uwi_set = set(metadata_df['uwi'])
         print("UWI set length: " + str(len(uwi_set)))		
         selected_list = []
         info_list = []
         col_labels = FileInput.pos_labels + feature_list + target_list
 
-
         for file in tqdm(lasfiles):
             file_uwi = int(max(file.split("_"),key=len))
             if file_uwi in uwi_set:
                 file_info = metadata_df.loc[metadata_df['uwi'] == file_uwi][col_labels].values[0]
+
                 selected_list.append(file)
                 info_list.append(tuple(file_info))
 

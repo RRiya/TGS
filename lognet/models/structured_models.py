@@ -23,7 +23,7 @@ class DenseModel(nn.Module):
                  embedding_dropout, output_size, layer_sizes, 
                  linear_layer_dropouts, output_range=None,
                  use_batchnorm=False, is_regression=True,
-                 is_multilabel=False):
+                 is_multilabel=False) -> None:
         
         super().__init__()
         

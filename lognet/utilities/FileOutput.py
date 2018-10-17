@@ -2,8 +2,6 @@ import os
 import errno
 import pandas as pd
 import csv
-import matplotlib.pyplot as plt
-
 
 class FileOutput():
     """
@@ -23,7 +21,6 @@ class FileOutput():
     # Do this only once
     def _writeHeader(self, header_list):
 
-        assert isinstance(header_list, list) == True, 'header_list is not a list'
         print("Writing header file: headers.txt")
         with open(os.path.join(self.output_path, 'headers.txt'), 'w') as header_file:
             csv_writer = csv.writer(header_file, dialect='excel')
@@ -32,19 +29,12 @@ class FileOutput():
 
     def write_csv(self, file_name, file_data):
 
-        assert isinstance(file_data, pd.core.frame.DataFrame)==True,"file_data is not a dataframe"
+        assert isinstance(file_data, pd.core.frame.DataFrame)==True
         if not self.header_written:
             self._writeHeader(file_data.columns.values.tolist())
         csv_filename = os.path.join(self.output_path, file_name)
         print(f"Writing CSV file: {csv_filename}")
-        file_data.to_csv(csv_filename, index=False)
-       
-    def write_plots(self, plot_name, fig):
-        
-        assert isinstance(plot_name, str),"plot_name is not a string"
-        png_filename = os.path.join(self.output_path, plot_name)
-        print(f"Saving PNG file: {png_filename}")
-        fig.savefig(png_filename)
-                            
+        file_data.to_csv(csv_filename, index=False, header=None)
+
     def getFilePath(self):
         return self.output_path

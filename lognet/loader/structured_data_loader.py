@@ -5,14 +5,8 @@ import os
 import linecache
 import torch
 import numpy as np
-import pandas as pd
 
 from torch.utils import data
-from lognet.utilities.FileInput import FileInput
-from lognet.preprocess.DataPrep import DataPrep
-
-
-
 
 
 class LazyCSVDataset(data.Dataset):
@@ -24,34 +18,24 @@ class LazyCSVDataset(data.Dataset):
         response_features (str or list): Target variable(s)
     """
 
-    def __init__(self,header_file, root_path ,filename, response_features,model_type):
+    def __init__(self, header_file: str, filename: str, response_features) -> None:
 
         self.header_file = header_file
-        self.filename = os.path.join(root_path,filename)
-        #self.line_count = 0
+        self.filename = filename
+        self.line_count = 0
 
-        #with open(filename, "r") as f:
-            #self.line_count = len(f.readlines()) - 1
+        with open(filename, "r") as f:
+            self.line_count = len(f.readlines()) - 1
 
         line = linecache.getline(self.header_file, 1)
-        self.column_names = line.rstrip().split(',')
+        column_names = line.rstrip().split(',')
 
         if not isinstance(response_features, list):
             response_features = [response_features]
 
         self.response_feature_columns = []
         for feature in response_features:
-            self.response_feature_columns.append(self.column_names.index(feature))
-            
-        read_data = FileInput(root_path,root_path+filename)
-        filelist,data = read_data._readFiles()
-        prep_data = DataPrep(model_type)
-        data = prep_data._compute_log(data, 'SRESCurve')
-        data = prep_data._compute_log(data, 'NeutCurve')
-        data = prep_data._compute_cube(data,'DEN')
-        data = prep_data._remove_nulls(data)
-        self.data_capped = prep_data._cap_feature(data,'SonicCurve',1,100)
-        
+            self.response_feature_columns.append(column_names.index(feature))
 
     def __getitem__(self, index):
         """Returns a row of the CSV file.
@@ -62,12 +46,12 @@ class LazyCSVDataset(data.Dataset):
         Returns:
             Returns a tuple of (features, targets)
         """
-        #line = linecache.getline(self.filename, index + 2)
-        #row = np.array(line.rstrip().split(',')).astype(np.float)
-        row = self.data_capped.iloc[index,:].values
+        line = linecache.getline(self.filename, index + 1)
+        try:
+            row = np.array(line.rstrip().split(',')).astype(np.float)
+        except:
+            return self.__getitem__(np.random.randint(0, self.__len__()))
         return row[self.response_feature_columns], np.delete(row, self.response_feature_columns)
-        
-         
 
     def __len__(self):
         """Number of rows in the CSV file.
@@ -75,17 +59,17 @@ class LazyCSVDataset(data.Dataset):
         Returns:
             Returns the number of rows in the CSV file.
         """
-        return len(self.data_capped)
+        return self.line_count
 
 
-def create_lazy_loaders(root_path, header_file, file_list, response_features, model_type):
+def create_lazy_loaders(root_path, header_file, file_list, response_features):
     """
     """
     lazy_loaders = []
 
     for filename in file_list:
         lazy_loaders.append(LazyCSVDataset(
-            header_file, root_path, filename, response_features, model_type))
+            header_file, os.path.join(root_path, filename), response_features))
 
     return lazy_loaders
 
@@ -95,17 +79,15 @@ class StructuredDataset(data.Dataset):
     Concatenated structed dataset
     """
 
-    def __init__(self, root_path, header_file, file_list, response_features, model_type):
+    def __init__(self, root_path, header_file, file_list, response_features) -> None:
         """
         Constructor
         """
-        
         self.lazy_loaders = create_lazy_loaders(
-            root_path, header_file, file_list, response_features, model_type)
+            root_path, header_file, file_list, response_features)
         self.concatenated_dataset = data.ConcatDataset(self.lazy_loaders)
         self.rec_lengths = [len(self.lazy_loaders[i])
                             for i in range(len(self.lazy_loaders))]
-        
 
     def __getitem__(self, index):
         """
