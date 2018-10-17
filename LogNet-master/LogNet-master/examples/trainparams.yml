@@ -1,0 +1,8 @@
+metadata_csv: '/ldata/data/PermianIndexFiles/QuadComboDensityPermianWells.csv'
+prepdata_path: '/ldata/cenyongx/PermianFeatures'
+model_path: '/ldata/cenyongx/tests/code_output'
+model_type: 'XGB'
+model_params: {'n_estimators': 900, 'learning_rate': 0.03, 'gamma': 0,
+               'subsample': 0.75, 'colsample_bytree': 1.0, 'max_depth': 9}
+feature_curves: ['CUBE_DEN', 'GR', 'LOG_NEUT', 'LOG_RES']
+target_curves: ['SON']

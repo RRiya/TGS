@@ -1,0 +1,22 @@
+pipeline {
+  agent {
+    node {
+      label 'htl-bigd01'
+    }
+  }
+  stages {
+    stage('Unit Tests') {
+      steps {
+        sh 'bash build.sh'
+      }
+      post {
+        success {
+          echo 'Tests successful'
+        }
+        failure {
+          echo 'Tests failed'
+        }
+      }
+    }
+  }
+}
