@@ -1,0 +1,8 @@
+las_file_path: '/ldata/cenyongx/selected_files/subset'
+metadata_csv: '/ldata/cenyongx/WellTopFormation/prepPermianTops.csv'
+prepdata_path: '/ldata/cenyongx/welltop/csv_output'
+model_path: '/ldata/cenyongx/welltop/model_output'
+model_type: 'XGBCls'
+features: ['Name', 'FormationName', 'FormationTopID', 'FormationTopMD', 'WGS84Latitude', 'WGS84Longitude',
+           'SRESCurve', 'NeutCurve', 'SonicCurve', 'GRCurve', 'CaliCurve']
+basin: 'Midland'

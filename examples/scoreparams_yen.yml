@@ -1,0 +1,9 @@
+skip_prep: False
+las_file_path: '/ldata/cenyongx/tests/quadcombo'
+metadata_csv: '/ldata/cenyongx/tests/quadcombo/SmallSet42043.csv'
+prepdata_path: '/ldata/cenyongx/tests/csv_output'
+output_path: '/ldata/cenyongx/tests/pred_output'
+model_path: '/ldata/cenyongx/tests/model_output'
+model_type: 'XGB'
+feature_curves: ['Gamma', 'Resistivity', 'Neutron']
+target_curves: ['Sonic']

@@ -1,0 +1,9 @@
+skip_prep: True
+las_file_path: '/ldata/vaisbyre/Wells_new/'
+metadata_csv: '/homedirs/rakskhan/Desktop/LogNet_Repo/QuadComboDensityPermianWells.csv'
+prepdata_path: '/homedirs/rakskhan/Desktop/LogNet_Repo/Train_CSV_Output/'
+output_path: '/homedirs/rakskhan/Desktop/LogNet_Repo/Train_Output_16K/'
+model_path: '/homedirs/rakskhan/Desktop/LogNet_Repo/Model_Output_16K/'
+model_type: 'XGB'
+feature_curves: ['GRCurve', 'SRESCurve', 'NeutCurve']
+target_curves: ['SonicCurve']
