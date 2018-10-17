@@ -1,2 +1,2 @@
 # TGS
-Github internal team practice
+This is a branch created to understand how to commit changes
