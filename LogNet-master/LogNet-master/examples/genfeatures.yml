@@ -1,0 +1,6 @@
+las_file_path: '/ldata/data/PermianWells'
+metadata_csv: '/ldata/data/PermianIndexFiles/QuadComboDensityPermianWells.csv'
+prepdata_path: '/ldata/cenyongx/PermianFeatures'
+model_type: 'XGB'
+feature_curves: ['DEN', 'GR', 'NEUT', 'RES']
+target_curves: ['SON']
